@@ -1,4 +1,4 @@
-const { parseRawInput, processInputArg, pipe, split, map, tap, sum } = require('../util.js');
+const { parseRawInput, processInputArg, pipe, split, map, tap, sum, chunk } = require('../util.js');
 const [arg = 0] = process.argv.slice(2);
 
 const filename = processInputArg(arg);
@@ -7,16 +7,27 @@ const inputList = parseRawInput(filename).trim();
 
 const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+const findIntersectingEl = ([head, ...rest]) => {
+  return rest.reduce((a, bArr) => {
+    const b = new Set(bArr);
+    const set = new Set();
+
+    for (const el of a) {
+      if (b.has(el)) {
+        set.add(el);
+      }
+    }
+
+    return set;
+  }, new Set(head));
+};
+
+const calculateCharValue = (value) => chars.indexOf(value) + 1;
+
+const firstFromSet = (set) => Array.from(set)[0];
+
 const part1 = () => {
   const compute = () => {
-
-    const findIntersectingEl = (a, b) => {
-      for (const el of a) {
-        if (b.has(el)) {
-          return el;
-        }
-      }
-    };
 
     const splitToSet = (str) => {
       const middle = str.length / 2;
@@ -29,8 +40,9 @@ const part1 = () => {
     const splitInput = pipe([
       split('\n'),
       map(splitToSet),
-      map(([first, last]) => findIntersectingEl(first, last)),
-      map((i) => chars.indexOf(i) + 1),
+      map(findIntersectingEl),
+      map(firstFromSet),
+      map(calculateCharValue),
       sum,
     ]);
 
@@ -42,6 +54,16 @@ const part1 = () => {
 
 const part2 = () => {
   const compute = () => {
+    const splitInput = pipe([
+      split('\n'),
+      chunk(3),
+      map(findIntersectingEl),
+      map(firstFromSet),
+      map(calculateCharValue),
+      sum,
+    ]);
+
+    return splitInput(inputList);
   };
 
   console.log(`Part 2: Count is "${compute()}"`);

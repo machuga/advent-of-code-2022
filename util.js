@@ -10,7 +10,7 @@ module.exports.processInputArg = (arg) => {
   switch (arg) {
     case '--run': return 'test-input.txt';
     case '--sample': return 'sample-input.txt';
-    case '': return 0;
+    case 0: return 0;
     default: return 'sample-input.txt';
   }
 };
@@ -40,6 +40,18 @@ module.exports.transpose = (array) => array[0].map((_, colIndex) => array.map(ro
 module.exports.zip = (a, b) => a.map((k, i) => [k, b[i]]);
 
 module.exports.sort = (arr) => arr.sort((a, b) => a < b ? -1 : 1);
+
+module.exports.chunk = (size) => (arr) => arr.reduce((result, item, index) => {
+  const chunkIndex = Math.floor(index / size);
+
+  if(!result[chunkIndex]) {
+    result[chunkIndex] = [] // start a new chunk
+  }
+
+  result[chunkIndex].push(item)
+
+  return result;
+}, []);
 
 module.exports.tap = (str) => (value) => {
   console.log(str, value);
