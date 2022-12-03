@@ -1,16 +1,17 @@
-# Machuga's Advent of Code 2021 Submissions
+# Machuga's Advent of Code 2022 Submissions
 
 For any of the exercises using JavaScript, you can `cd` to any directory and run:
 
 ```
-node aoc.js < test-input.txt
+node aoc.js --sample
 ```
 
+to use the sample inputs or run 
 or
 
 
 ```
-node aoc.js test-input.txt
+node aoc.js --run
 ```
 
-to test out functionality (reads from STDIN or filename)
+to use my test inputs.
