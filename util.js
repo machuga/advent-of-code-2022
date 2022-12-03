@@ -6,6 +6,15 @@ module.exports.parseInput = (filename = 0) =>
 module.exports.parseRawInput = (filename = 0) =>
   readFileSync(filename).toString();
 
+module.exports.processInputArg = (arg) => {
+  switch (arg) {
+    case '--run': return 'test-input.txt';
+    case '--sample': return 'sample-input.txt';
+    case '': return 0;
+    default: return 'sample-input.txt';
+  }
+};
+
 module.exports.toInt = (str) => parseInt(str, 10);
 
 module.exports.split = (separator) => (str) => str.split(separator);
