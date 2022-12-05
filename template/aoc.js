@@ -1,5 +1,6 @@
-const { parseRawInput } = require('../util.js');
-const [filename = 0] = process.argv.slice(2);
+const { parseRawInput, processInputArg } = require('../util.js');
+const [arg = 0] = process.argv.slice(2);
+const filename = processInputArg(arg);
 const inputList = parseRawInput(filename).trim();
 
 const part1 = () => {
