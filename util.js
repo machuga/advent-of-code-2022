@@ -19,6 +19,8 @@ module.exports.toInt = (str) => parseInt(str, 10);
 
 module.exports.split = (separator) => (str) => str.split(separator);
 
+module.exports.trim = (str) => str.trim();
+
 module.exports.join = (separator) => (str) => str.join(separator);
 
 module.exports.pipe = (fns) => (x) => fns.reduce((v, f) => f(v), x);
