@@ -90,6 +90,20 @@ const part1 = () => {
 
 const part2 = () => {
   const compute = () => {
+    return pipe([
+      parseInputs,
+      ([stack, instructions]) => {
+        instructions.forEach(([count, source, target]) => {
+          const crates = stack[source].splice(stack[source].length - count);
+
+          stack[target] = stack[target].concat(crates);
+        });
+
+        return stack;
+      },
+      map((stack) => stack[stack.length - 1]),
+      join(''),
+    ])(inputList);
   };
 
   console.log(`Part 2: Result is "${compute()}"`);
