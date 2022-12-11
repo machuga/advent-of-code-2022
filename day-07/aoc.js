@@ -1,4 +1,4 @@
-const { parseRawInput, processInputArg, toInt, sum, trim, tap, pipe, map, split } = require('../util.js');
+const { parseRawInput, processInputArg, toInt, filter, sum, trim, tap, pipe, map, split } = require('../util.js');
 const [arg = 0] = process.argv.slice(2);
 const filename = processInputArg(arg);
 const inputList = parseRawInput(filename).trim();
@@ -174,11 +174,17 @@ const findDirsUnder = (maxSize) => (tree) => {
   }, tree.size <= maxSize ? [{ name: tree.name, size: tree.size}] : []);
 };
 
-const part1 = () => {
-  const createFile = (name, size, parent) => ({ name, size, parent })
-  const createDir = (name, parent) => ({ name, children: [], parent })
-  const rootNode = createDir('/', null);
+const collectDirSizes = (tree) => {
+  return tree.children.reduce((acc, node) => {
+    if (node.type === 'dir') {
+      return acc.concat(collectDirSizes(node));
+    }
 
+    return acc;
+  }, [{ name: tree.name, size: tree.size}]);
+};
+
+const part1 = () => {
   const compute = () => {
     return pipe([
       tokenize,
@@ -195,7 +201,19 @@ const part1 = () => {
 };
 
 const part2 = () => {
+  const TOTAL_SPACE = 70_000_000;
+  const NECESSARY_SPACE = 30_000_000;
+
   const compute = () => {
+    return pipe([
+      tokenize,
+      parse,
+      appendSizesToDirs,
+      collectDirSizes,
+      (dirs) => [dirs, NECESSARY_SPACE - (TOTAL_SPACE - dirs.find(dir => dir.name === '/').size)],
+      ([dirs, minSpaceNeededBack]) => dirs.filter(dir => dir.size >= minSpaceNeededBack).sort((a, b) => a.size < b.size ? -1 : 1),
+      (dirs) => dirs[0].size,
+    ])(inputList);
   };
 
   console.log(`Part 2: Count is "${compute()}"`);
