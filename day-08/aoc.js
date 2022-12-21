@@ -67,7 +67,60 @@ const part1 = () => {
 };
 
 const part2 = () => {
+  const countVisibleTreesIn = (grid, rowIndex, colIndex) => (direction) => {
+    const treeHeight = grid[rowIndex][colIndex];
+    const nodes = [];
+
+    if (direction === 'north') {
+      for (let i = rowIndex - 1; i >= 0; i--) {
+        nodes.push(grid[i][colIndex]);
+        if (grid[i][colIndex] >= treeHeight) {
+          break;
+        }
+      }
+    } else if (direction === 'south') {
+      for (let i = rowIndex + 1; i < grid.length; i++) {
+        nodes.push(grid[i][colIndex]);
+        if (grid[i][colIndex] >= treeHeight) {
+          break;
+        }
+      }
+    } else if (direction === 'west') {
+      for (let i = colIndex - 1; i >= 0; i--) {
+        nodes.push(grid[rowIndex][i]);
+        if (grid[rowIndex][i] >= treeHeight) {
+          break;
+        }
+      }
+    } else if (direction === 'east') {
+      for (let i = colIndex + 1; i < grid[rowIndex].length; i++) {
+        nodes.push(grid[rowIndex][i]);
+        if (grid[rowIndex][i] >= treeHeight) {
+          break;
+        }
+      }
+    }
+
+    return nodes.length;
+  }
+
   const compute = () => {
+    return pipe([
+      parseGrid,
+      (grid) => reduce((highest, row, rowIndex) => {
+        row.forEach((tree, colIndex) => {
+          const visibleTrees = directions
+            .map(countVisibleTreesIn(grid, rowIndex, colIndex))
+            .reduce((product, quantity) => product * quantity, 1);
+
+          if (visibleTrees > highest) {
+            highest = visibleTrees;
+          }
+        });
+
+        return highest;
+      }, 0)(grid)
+    ])(inputList);
   };
 
   console.log(`Part 2: Count is "${compute()}"`);
